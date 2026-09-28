@@ -1,7 +1,7 @@
 {
  "app": "barakholka-post-manager",
  "version": 3,
- "updatedAt": 1790581334107,
+ "updatedAt": 1790582339706,
  "posts": [
   {
    "id": "ab0d6c59-b0b8-418c-b505-6850131376de",
@@ -1174,6 +1174,190 @@
      "id": "a74315d9-4687-4d1c-9869-c3511942fd2b",
      "name": "06.jpg",
      "path": "photos/townhouse-supalai-140/06.jpg"
+    }
+   ]
+  },
+  {
+   "id": "4afcbc4b-3439-43db-a107-47a18b2a039f",
+   "cat": "auto",
+   "text": "Nissan Juke — яркий и стильный, в аренду\n\n🚗 Nissan Juke, красный, эффектный внешний вид — заметен на дороге\n🔧 Установлен спортивный выхлоп с заслонкой (можно переключать звук — тихий/громкий режим)\n⚙️ Диски Enkei, свежая резина Continental (замена месяц назад)\n🛠️ Прошёл большое ТО — полностью готов к эксплуатации без вложений\n🛡️ Страховка первого класса — максимальная защита при аренде\n\n💰 13 000 бат/мес при заключении годового контракта\n\nИдеально подходит тем, кто хочет заметный, ухоженный автомобиль без забот о его состоянии. Пишите для бронирования и деталей.",
+   "status": "draft",
+   "plannedDate": "",
+   "createdAt": 1790582336596,
+   "updatedAt": 1790582336596,
+   "photos": [
+    {
+     "id": "05223607-72b1-4a20-8b83-11fc56b5e0e1",
+     "name": "01.jpg",
+     "path": "photos/nissan-juke/01.jpg"
+    },
+    {
+     "id": "a405c18a-beae-48ee-a391-76da7520968c",
+     "name": "02.jpg",
+     "path": "photos/nissan-juke/02.jpg"
+    },
+    {
+     "id": "2a24f853-f2c1-486b-a8d1-5cec715f6851",
+     "name": "03.jpg",
+     "path": "photos/nissan-juke/03.jpg"
+    },
+    {
+     "id": "3a2b4e8c-2c4c-4439-89fa-b85f9ee86c9a",
+     "name": "04.jpg",
+     "path": "photos/nissan-juke/04.jpg"
+    },
+    {
+     "id": "9e4df901-e009-4f87-b621-e3a9476f7e91",
+     "name": "05.jpg",
+     "path": "photos/nissan-juke/05.jpg"
+    },
+    {
+     "id": "de2aa757-e46b-49f0-9b40-63f9dbf2dd98",
+     "name": "06.jpg",
+     "path": "photos/nissan-juke/06.jpg"
+    },
+    {
+     "id": "6dc971c0-2c80-4623-9542-122ab57115be",
+     "name": "07.jpg",
+     "path": "photos/nissan-juke/07.jpg"
+    },
+    {
+     "id": "e563d79a-c3b6-48a8-9181-e97a8da3ecd8",
+     "name": "08.jpg",
+     "path": "photos/nissan-juke/08.jpg"
+    }
+   ]
+  },
+  {
+   "id": "41973927-2ec1-4eb8-9651-b417e24180fc",
+   "cat": "auto",
+   "text": "Максимальная комплектация\nБез ключевой доступ\nStart/Stop\nSport режим\nСалон Алькантара\nКруиз контроль\nШустрая, удобная, Вместительная, при этом удобно парковаться\nОтлично выглядит, отлично едет\nПолностью обслужена, готова к аренде\nСтраховка первого класса\n\n12 тыс бат при годовом контракте",
+   "status": "draft",
+   "plannedDate": "",
+   "createdAt": 1790582337596,
+   "updatedAt": 1790582337596,
+   "photos": [
+    {
+     "id": "f131ac5d-cc9d-45e3-8353-e8c353f7f776",
+     "name": "01.jpg",
+     "path": "photos/maksimalnaya-komplektaciya/01.jpg"
+    },
+    {
+     "id": "55d90c2d-3adc-4e76-b119-fc1f977f5496",
+     "name": "02.jpg",
+     "path": "photos/maksimalnaya-komplektaciya/02.jpg"
+    },
+    {
+     "id": "d2e79989-17f8-418b-bd65-ab26dbd42bbe",
+     "name": "03.jpg",
+     "path": "photos/maksimalnaya-komplektaciya/03.jpg"
+    },
+    {
+     "id": "d8557e49-fac5-413c-a74f-87b275e58921",
+     "name": "04.jpg",
+     "path": "photos/maksimalnaya-komplektaciya/04.jpg"
+    },
+    {
+     "id": "1a22f506-2bd7-4a1c-b993-65a2e0011a31",
+     "name": "05.jpg",
+     "path": "photos/maksimalnaya-komplektaciya/05.jpg"
+    },
+    {
+     "id": "84e70a5b-16ab-4627-92fb-91f50c83c908",
+     "name": "06.jpg",
+     "path": "photos/maksimalnaya-komplektaciya/06.jpg"
+    }
+   ]
+  },
+  {
+   "id": "f11d11df-ac6a-4e70-8725-e7faa2cb88ff",
+   "cat": "auto",
+   "text": "Honda Jazz, 2017\nКожаные чехлы\nУстановлен дисплей+ камера заднего вида\nЕсть Эко Режим\nОчень просторный внутри + вместительный багажник, при этом удобно парковаться\nНовая Резина Yokohama\nАвтомобиль полностью обслужен\nСтраховка первого класса\n\n11 тысяч бат при годовом контракте",
+   "status": "draft",
+   "plannedDate": "",
+   "createdAt": 1790582338596,
+   "updatedAt": 1790582338596,
+   "photos": [
+    {
+     "id": "efe19374-0356-4e28-8e55-6443dddd10f1",
+     "name": "01.jpg",
+     "path": "photos/honda-jazz-2017/01.jpg"
+    },
+    {
+     "id": "b0e1f670-3252-4215-bf57-66414aeb0bda",
+     "name": "02.jpg",
+     "path": "photos/honda-jazz-2017/02.jpg"
+    },
+    {
+     "id": "ab051431-93f6-4a82-bd13-23284361c29a",
+     "name": "03.jpg",
+     "path": "photos/honda-jazz-2017/03.jpg"
+    },
+    {
+     "id": "e7706ec7-7992-4d2c-ac19-bd9c91226a29",
+     "name": "04.jpg",
+     "path": "photos/honda-jazz-2017/04.jpg"
+    },
+    {
+     "id": "75660fd4-a157-44d7-88fa-6f458e3d6c15",
+     "name": "05.jpg",
+     "path": "photos/honda-jazz-2017/05.jpg"
+    },
+    {
+     "id": "511b5666-d7cd-4336-8512-8c06e287eaa4",
+     "name": "06.jpg",
+     "path": "photos/honda-jazz-2017/06.jpg"
+    },
+    {
+     "id": "0497ef6a-be76-4bed-bf30-d889f9b594c5",
+     "name": "07.jpg",
+     "path": "photos/honda-jazz-2017/07.jpg"
+    },
+    {
+     "id": "e24eb8a4-12b4-4242-8505-e7329002805d",
+     "name": "08.jpg",
+     "path": "photos/honda-jazz-2017/08.jpg"
+    },
+    {
+     "id": "8126509e-e916-4e5f-8fef-29dcb8a4b06c",
+     "name": "09.jpg",
+     "path": "photos/honda-jazz-2017/09.jpg"
+    },
+    {
+     "id": "eeac589f-c4e8-4dc8-93c4-da3e2ed310e1",
+     "name": "10.jpg",
+     "path": "photos/honda-jazz-2017/10.jpg"
+    }
+   ]
+  },
+  {
+   "id": "9dc103e2-29d1-4000-bc15-33e813dcb8d6",
+   "cat": "auto",
+   "text": "Toyota Yaris Хетчбек 8000\nЭкономичный автомобиль\nПолностью обслужен\nЛитье\nНовые тормоза\nБез страховки первого класса (со страховкой цена 9500)",
+   "status": "draft",
+   "plannedDate": "",
+   "createdAt": 1790582339596,
+   "updatedAt": 1790582339596,
+   "photos": [
+    {
+     "id": "226d2e57-83a4-4f7e-a3ee-d77e3592fd93",
+     "name": "01.jpg",
+     "path": "photos/toyota-yaris/01.jpg"
+    },
+    {
+     "id": "1e12bf1d-29fd-4b11-9979-b6dfd102a90a",
+     "name": "02.jpg",
+     "path": "photos/toyota-yaris/02.jpg"
+    },
+    {
+     "id": "ab3bef0e-3007-4d7c-929b-648e70a24914",
+     "name": "03.jpg",
+     "path": "photos/toyota-yaris/03.jpg"
+    },
+    {
+     "id": "3a6a995c-278f-40a8-916e-05c112203ab7",
+     "name": "04.jpg",
+     "path": "photos/toyota-yaris/04.jpg"
     }
    ]
   }
