@@ -1,0 +1,1474 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2563eb">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Посты">
+<title>Менеджер постов · Барахолка</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+button,.chip,.seg-btn,input,select,textarea,.pthumb,.dropzone,.mini{touch-action:manipulation}
+:root{
+  --bg:#eef1f6; --card:#fff; --text:#1a2333; --muted:#68758a;
+  --line:#e2e8f1; --accent:#2563eb; --accent-d:#1d4ed8; --accent-soft:#e8effd;
+  --green:#15803d; --green-soft:#e5f7ec; --violet:#6d28d9; --violet-soft:#ece9fb;
+  --realty:#0f766e; --realty-soft:#dff3f0; --auto:#c2410c; --auto-soft:#ffedd5;
+  --amber:#7a5200; --amber-soft:#fff4dd; --red:#dc2626; --radius:14px;
+}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif}
+body.lock{overflow:hidden}
+.wrap{max-width:1180px;margin:0 auto;padding:0 16px}
+
+/* ---------- шапка ---------- */
+header{background:var(--card);border-bottom:1px solid var(--line);padding:13px 0;position:sticky;top:0;z-index:40;padding-top:calc(13px + env(safe-area-inset-top,0px))}
+.head{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.logo{font-size:28px;background:var(--accent-soft);border-radius:12px;width:52px;height:52px;display:flex;align-items:center;justify-content:center;flex:none}
+h1{font-size:19px;margin:0}
+.sub{font-size:12.5px;color:var(--muted);margin-top:2px}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 14px;border-radius:10px;border:1px solid var(--line);background:#fff;color:var(--text);font-size:14px;font-weight:500;cursor:pointer;font-family:inherit}
+.btn:hover{border-color:#c4d0e0;background:#f7f9fc}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.btn.primary:hover{background:var(--accent-d)}
+.btn.danger{color:var(--red);border-color:#f3c6c6}
+.btn.danger:hover{background:#fdecec}
+.btn:disabled{opacity:.45;cursor:default}
+.btn.big{font-size:16px;padding:12px 22px}
+
+/* ---------- панель поиска и фильтров ---------- */
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:16px 0 10px}
+.search{flex:1;min-width:200px;padding:9px 13px;border:1px solid var(--line);border-radius:10px;font:inherit;background:#fff;color:var(--text)}
+.search:focus{outline:2px solid #bcd2fb;border-color:var(--accent)}
+.sort{padding:8px 10px;border-radius:10px;border:1px solid var(--line);background:#fff;font:inherit;font-size:13.5px;color:var(--text)}
+.filters{display:flex;gap:8px 20px;flex-wrap:wrap;margin:0 0 14px}
+.fgroup{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.flabel{font-size:12.5px;color:var(--muted);font-weight:700}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:13px;cursor:pointer;color:var(--text);font-family:inherit}
+.chip:hover{border-color:#c4d0e0}
+.chip.active{background:var(--accent-soft);color:var(--accent-d);border-color:#b6ccf5;font-weight:600}
+
+/* ---------- галерея ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(235px,1fr));gap:15px;margin-bottom:26px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;display:flex;flex-direction:column;transition:box-shadow .15s,border-color .15s}
+.card:hover{box-shadow:0 8px 22px rgba(26,35,51,.08);border-color:#cfdaea}
+.thumb{position:relative;aspect-ratio:1/1;background:#f2f5f9}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.no-img{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:36px;color:#c3ccda}
+.pcount{position:absolute;bottom:8px;right:8px;background:rgba(15,23,42,.6);color:#fff;font-size:12px;padding:2px 9px;border-radius:999px}
+.cbody{padding:12px 13px 13px;display:flex;flex-direction:column;flex:1}
+.ctitle{font-weight:600;font-size:14.5px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word;min-height:2.7em}
+.cmeta{display:flex;gap:6px;align-items:center;color:var(--muted);font-size:12.5px;margin:7px 0 10px;flex-wrap:wrap}
+.badge{font-size:11px;padding:3px 9px;border-radius:999px;font-weight:600;white-space:nowrap}
+.b-draft{background:#eef1f5;color:#5b6779}
+.b-ready{background:var(--green-soft);color:var(--green)}
+.b-published{background:var(--violet-soft);color:var(--violet)}
+.b-realty{background:var(--realty-soft);color:var(--realty)}
+.b-auto{background:var(--auto-soft);color:var(--auto)}
+.cactions{display:flex;gap:6px;flex-wrap:wrap;margin-top:auto}
+.mini{width:34px;height:34px;border-radius:9px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:15px;line-height:1;display:inline-flex;align-items:center;justify-content:center;padding:0}
+.mini:hover{background:var(--accent-soft);border-color:#b6ccf5}
+.mini.danger:hover{background:#fdecec;border-color:#f5b5b5}
+.no-match{grid-column:1/-1;text-align:center;color:var(--muted);padding:44px 0;font-size:15px}
+
+/* ---------- пустое состояние / баннер / футер ---------- */
+.empty{background:var(--card);border:1px dashed #cdd7e4;border-radius:var(--radius);padding:46px 24px;text-align:center;margin:18px 0 30px}
+.e-emoji{font-size:50px}
+.empty h2{margin:10px 0 12px;font-size:19px}
+.empty ol{display:inline-block;text-align:left;color:var(--muted);margin:0 0 22px;line-height:1.9}
+.banner{background:var(--amber-soft);border:1px solid #f2d488;color:var(--amber);padding:10px 14px;border-radius:12px;margin:14px 0 0;font-size:13.5px}
+footer{color:var(--muted);font-size:12.5px;padding:4px 16px 30px}
+
+/* ---------- модальные окна ---------- */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.5);display:none;align-items:center;justify-content:center;padding:18px;z-index:60}
+.overlay.open{display:flex}
+.sheet{background:#fff;border-radius:16px;max-width:800px;width:100%;max-height:92vh;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 24px 60px rgba(15,23,42,.28)}
+@supports (height:100dvh){.sheet{max-height:92dvh}}
+.sheet.small{max-width:430px}
+.sheet-head{padding:15px 20px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.sheet-head h2{margin:0;font-size:17px}
+.sheet-body{padding:16px 20px;overflow:auto;flex:1}
+.sheet-foot{padding:13px 20px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.x{border:none;background:none;font-size:19px;cursor:pointer;color:var(--muted);padding:4px 9px;border-radius:8px}
+.x:hover{background:#f1f4f9;color:var(--text)}
+
+/* ---------- редактор ---------- */
+label.fl{display:block;font-size:12px;font-weight:700;color:var(--muted);margin:15px 0 6px;text-transform:uppercase;letter-spacing:.04em}
+label.fl .btn{margin-left:8px;text-transform:none;letter-spacing:0;padding:4px 10px;font-size:12.5px}
+.inp{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:10px;font:inherit;background:#fff;color:var(--text)}
+.inp:focus{outline:2px solid #bcd2fb;border-color:var(--accent)}
+#fText{min-height:200px;resize:vertical;line-height:1.55}
+.frow{display:flex;gap:12px;flex-wrap:wrap}
+.frow>div{flex:1;min-width:180px}
+.seg{display:flex;gap:8px}
+.seg-btn{flex:1;padding:11px 8px;border-radius:11px;border:1.5px solid var(--line);background:#fff;cursor:pointer;font:inherit;font-size:14px;font-weight:600;color:var(--text)}
+.seg-btn:hover{border-color:#c4d0e0}
+.seg-btn.active{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-d)}
+.photos-block,.collage-block{margin-top:18px;border:1px solid var(--line);border-radius:12px;padding:14px}
+.phead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+.phead b{font-size:14.5px}
+#photoCount{color:var(--muted);font-size:13px;margin-right:auto}
+.dropzone{border:2px dashed #cbd5e3;border-radius:10px;padding:15px;text-align:center;color:var(--muted);font-size:13.5px;cursor:pointer;background:#fafbfd}
+.dropzone:hover,.dropzone.over{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-d)}
+.thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;margin-top:10px}
+.no-photos{grid-column:1/-1;color:var(--muted);font-size:13px;text-align:center;padding:4px}
+.pthumb{position:relative;border-radius:10px;overflow:hidden;aspect-ratio:1/1;background:#eef1f6;cursor:grab;border:1px solid var(--line)}
+.pthumb img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.pthumb.dragging{opacity:.4}
+.pthumb .num{position:absolute;top:6px;left:6px;background:rgba(15,23,42,.65);color:#fff;font-size:11.5px;padding:1px 7px;border-radius:999px;pointer-events:none}
+.pthumb .rm{position:absolute;top:4px;right:4px;width:22px;height:22px;border-radius:999px;border:none;background:rgba(15,23,42,.6);color:#fff;cursor:pointer;font-size:12px;line-height:1;padding:0}
+.pthumb .rm:hover{background:var(--red)}
+.pthumb .mv{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;padding:3px}
+.pthumb .mv button{border:none;border-radius:7px;background:rgba(15,23,42,.6);color:#fff;cursor:pointer;font-size:13px;width:28px;height:22px;padding:0}
+.pthumb .mv button:disabled{opacity:.25;cursor:default}
+#collagePreview{cursor:zoom-in}
+.collage-block img{width:100%;max-height:62vh;object-fit:contain;border-radius:10px;border:1px solid var(--line);display:block;background:#33393F}
+.hint{color:var(--muted);font-size:13.5px;text-align:center;padding:18px 8px;background:#fafbfd;border-radius:10px}
+.hint2{font-size:12px;color:var(--muted);text-align:center;margin-top:7px}
+#imgBig{max-width:100%;max-height:68vh;border-radius:10px}
+
+/* ---------- помощь ---------- */
+.help ol{padding-left:20px;margin:0}
+.help li{margin-bottom:11px}
+.note{background:#f6f8fc;border:1px solid var(--line);border-radius:10px;padding:10px 14px;font-size:13.5px;margin-top:10px}
+
+/* ---------- синхронизация ---------- */
+.dot{width:9px;height:9px;border-radius:50%;background:#9aa4b2;display:inline-block;flex:none}
+.dot.ok{background:#22c55e}
+.dot.warn{background:#f59e0b}
+.dot.err{background:#ef4444}
+.dot.sync{background:#3b82f6;animation:pulse 1.1s infinite}
+@keyframes pulse{50%{opacity:.35}}
+.chk{display:flex;align-items:center;gap:9px;font-size:13.5px;color:var(--text);margin:14px 0 0;font-weight:500;text-transform:none;letter-spacing:0}
+.chk input{width:18px;height:18px;accent-color:var(--accent)}
+.ph-wait{display:flex;align-items:center;justify-content:center;height:100%;color:#b6c0cd;font-size:20px}
+
+/* ---------- тосты ---------- */
+#toasts{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));left:50%;transform:translateX(-50%);display:flex;flex-direction:column;gap:8px;z-index:100;align-items:center;pointer-events:none;max-width:92vw}
+.toast{background:#111827;color:#fff;padding:10px 18px;border-radius:11px;font-size:14px;box-shadow:0 8px 24px rgba(0,0,0,.25);animation:tin .22s ease;text-align:center}
+.toast.t-warn{background:#78350f}
+.toast.t-err{background:#7f1d1d}
+.toast.out{opacity:0;transform:translateY(6px);transition:.3s}
+@keyframes tin{from{opacity:0;transform:translateY(8px)}to{opacity:1}}
+
+@media (max-width:640px){
+  body{font-size:16px}                      /* 16px+ — iOS Safari не зумит поле при фокусе */
+  .search,.inp,.sort{font-size:16px}
+  .sheet{max-width:100%;border-radius:0;max-height:100vh}
+  @supports (height:100dvh){.sheet{max-height:100dvh}}
+  .overlay{padding:0}
+  .grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .logo{width:44px;height:44px;font-size:24px}
+  .seg{flex-direction:column}
+  .seg-btn{padding:14px 10px}
+  #btnNew{flex:1 1 100%;justify-content:center;padding:13px}
+  .actions .btn{flex:1 1 auto;justify-content:center}
+  .toolbar{margin:12px 0 8px}
+  .filters{gap:6px 14px}
+  main.wrap{padding:0 12px}
+  .cactions{display:grid;grid-template-columns:repeat(auto-fill,minmax(38px,1fr));gap:6px}
+  .mini{width:100%;height:40px;font-size:17px}
+  .thumbs{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}
+  .pthumb .rm{width:28px;height:28px;font-size:14px}
+  .pthumb .mv button{width:36px;height:32px;font-size:17px}
+  .sheet-foot .btn{flex:1 1 auto;justify-content:center}
+  .collage-block img{max-height:50vh}
+  #imgBig{max-height:56vh}
+}
+</style>
+</head>
+<body>
+
+<header><div class="wrap head">
+  <div class="brand">
+    <div class="logo">🛍️</div>
+    <div>
+      <h1>Менеджер постов</h1>
+      <div class="sub">аренда недвижимости и машин · коллажи для Telegram</div>
+    </div>
+  </div>
+  <div class="actions">
+    <button class="btn primary" id="btnNew">＋ Новый пост</button>
+    <button class="btn" id="btnExport" title="Сохранить все посты в файл-бэкап">⬆ Экспорт</button>
+    <button class="btn" id="btnImport" title="Загрузить посты из файла-бэкапа">⬇ Импорт</button>
+    <button class="btn" id="btnSync" title="Синхронизация через GitHub"><span class="dot" id="syncDot"></span>Синк</button>
+    <button class="btn" id="btnHelp">❓ Помощь</button>
+    <input type="file" id="importInput" accept=".json,application/json" hidden>
+    <input type="file" id="photosInput" accept="image/*" multiple hidden>
+  </div>
+</div></header>
+
+<div class="wrap">
+  <div id="memBanner" class="banner" hidden>⚠️ <b>Режим предпросмотра:</b> изменения не сохраняются, скачивание может быть заблокировано. Скачайте этот файл и откройте в браузере на компьютере — там всё работает полностью.</div>
+</div>
+
+<div class="wrap toolbar">
+  <input class="search" id="q" type="search" placeholder="🔍 Поиск по тексту постов…">
+  <select class="sort" id="sSort" title="Сортировка">
+    <option value="new">Сначала новые</option>
+    <option value="old">Сначала старые</option>
+    <option value="plan">По плановой дате</option>
+  </select>
+</div>
+
+<div class="wrap filters">
+  <div class="fgroup"><span class="flabel">ТЕМА:</span><div id="catChips" class="chips"></div></div>
+  <div class="fgroup"><span class="flabel">СТАТУС:</span><div id="statusChips" class="chips"></div></div>
+</div>
+
+<main class="wrap">
+  <div id="grid" class="grid"></div>
+  <div id="empty" class="empty" hidden>
+    <div class="e-emoji">🛍️</div>
+    <h2>Здесь будут ваши посты</h2>
+    <ol>
+      <li>Нажмите «＋ Новый пост»</li>
+      <li>Выберите тему (🏠 недвижимость или 🚗 машина) и вставьте готовый текст</li>
+      <li>Добавьте фото — коллаж для Telegram соберётся сам</li>
+    </ol>
+    <div>
+      <button class="btn primary big" onclick="document.getElementById('btnNew').click()">＋ Создать первый пост</button>
+      <button class="btn big" id="btnEmptySync" style="margin:8px 0 0 8px">⚙️ Подключить синхронизацию</button>
+    </div>
+  </div>
+</main>
+
+<footer class="wrap" id="foot"></footer>
+
+<!-- ======================= РЕДАКТОР ======================= -->
+<div class="overlay" id="editorOverlay">
+  <div class="sheet">
+    <div class="sheet-head">
+      <h2 id="edHead">Новый пост</h2>
+      <button class="x" id="btnCloseEd" title="Закрыть">✕</button>
+    </div>
+    <div class="sheet-body">
+      <label class="fl">Тема поста</label>
+      <div class="seg" id="catSeg">
+        <button type="button" class="seg-btn" data-cat="realty">🏠 Аренда недвижимости</button>
+        <button type="button" class="seg-btn" data-cat="auto">🚗 Аренда машин</button>
+      </div>
+
+      <label class="fl" for="fText">Текст поста — переносится в Telegram один в один, с новыми строками
+        <button class="btn" id="btnPasteText" title="Вставить текст из буфера обмена">📋 Вставить</button>
+      </label>
+      <textarea class="inp" id="fText" placeholder="Вставьте сюда готовый текст поста…&#10;&#10;Переносы строк и отступы сохраняются точно как в оригинале."></textarea>
+
+      <div class="frow">
+        <div>
+          <label class="fl" for="fStatus">Статус</label>
+          <select class="inp" id="fStatus">
+            <option value="draft">✏️ Черновик</option>
+            <option value="ready">🟢 Готов к публикации</option>
+            <option value="published">✅ Опубликован</option>
+          </select>
+        </div>
+        <div>
+          <label class="fl" for="fDate">Планируемая дата публикации</label>
+          <input class="inp" type="date" id="fDate">
+        </div>
+      </div>
+
+      <div class="photos-block">
+        <div class="phead">
+          <b>📷 Фото</b><span id="photoCount"></span>
+          <button class="btn" id="btnAddPhotos">＋ Добавить фото</button>
+          <button class="btn" id="btnClipPhotos" title="Вставить фото из буфера обмена">📋 Из буфера</button>
+        </div>
+        <div class="dropzone" id="dropzone">Перетащите фото сюда · или нажмите, чтобы выбрать · или вставьте из буфера (Ctrl+V)</div>
+        <div id="thumbs" class="thumbs"></div>
+      </div>
+
+      <div class="collage-block">
+        <div class="phead">
+          <b>🖼️ Коллаж для Telegram</b><span id="collageInfo"></span>
+          <button class="btn" id="btnRebuild" title="Собрать заново">↻ Пересобрать</button>
+          <button class="btn" id="btnShareCollage" style="display:none" title="Отправить коллаж с текстом прямо в Telegram (мобильные)">📤 Поделиться</button>
+          <button class="btn primary" id="btnDlCollage">⬇ Скачать</button>
+        </div>
+        <div id="collagePreview"></div>
+        <div class="hint2">Фото №1 — главное, размещается сверху на всю ширину · нажмите на превью, чтобы рассмотреть</div>
+      </div>
+    </div>
+    <div class="sheet-foot">
+      <button class="btn danger" id="btnDelEditor">🗑 Удалить</button>
+      <span style="flex:1"></span>
+      <button class="btn" id="btnCancelEd">Отмена</button>
+      <button class="btn primary" id="btnSaveEd">💾 Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= ПРОСМОТР ИЗОБРАЖЕНИЯ ======================= -->
+<div class="overlay" id="imgOverlay">
+  <div class="sheet">
+    <div class="sheet-head">
+      <h2 id="imgTitle">Просмотр</h2>
+      <button class="x" id="btnCloseImg">✕</button>
+    </div>
+    <div class="sheet-body" style="text-align:center;background:#f4f6fa">
+      <img id="imgBig" alt="">
+      <div class="hint2">Чтобы сохранить: правый клик (или долгое нажатие) → «Сохранить изображение…»</div>
+    </div>
+    <div class="sheet-foot"><button class="btn primary" id="btnCloseImg2">Закрыть</button></div>
+  </div>
+</div>
+
+<!-- ======================= ПОМОЩЬ ======================= -->
+<div class="overlay" id="helpOverlay">
+  <div class="sheet">
+    <div class="sheet-head"><h2>Как пользоваться</h2><button class="x" id="btnCloseHelp">✕</button></div>
+    <div class="sheet-body help">
+      <ol>
+        <li><b>Создайте пост</b> — кнопка «＋ Новый пост». Выберите тему: 🏠 аренда недвижимости или 🚗 аренда машин. Вставьте готовый текст (кнопка «📋 Вставить» или Ctrl+V) — он сохранится <b>один в один</b>, со всеми переносами строк и отступами.</li>
+        <li><b>Добавьте фото</b> — кнопкой, перетаскиванием в пунктирную зону или просто Ctrl+V. Порядок фото меняйте перетаскиванием миниатюр или стрелками ‹ › (номер на миниатюре = позиция в коллаже).</li>
+        <li><b>Коллаж соберётся автоматически</b> в стиле «журнальной» раскладки: главное фото (№1) сверху на всю ширину, остальные — рядами ниже с мозаикой, тонкие тёмные рамки, портретный формат 1280 px — родной размер Telegram. В Telegram отправляйте коллаж как <b>«Фото»</b>, а не как «Файл» — тогда он откроется прямо в чате.</li>
+        <li><b>Опубликуйте</b>: на карточке нажмите «⬇️» (скачается коллаж) и «📋» (скопируется текст один в один), вставьте в группу. Затем отметьте пост галочкой ✅.</li>
+        <li><b>Темы и статусы</b>: фильтры сверху — «Тема» (недвижимость / машины) и «Статус» (Черновик → Готов → Опубликован). Поле «Планируемая дата» — когда хотите выложить; сортировка «По плановой дате» покажет очередь.</li>
+        <li><b>Дублирование ⧉</b> — удобно, чтобы опубликовать тот же объект в нескольких группах.</li>
+      </ol>
+      <div class="note">💾 <b>Где хранятся данные.</b> Всё хранится локально в этом браузере — ничего никуда не отправляется. Для переноса на другой компьютер или страховки используйте «⬆ Экспорт» (файл-бэкап) и «⬇ Импорт». Делайте бэкап регулярно!</div>
+      <div class="note">⚠️ <b>Если кнопки «Скачать»/«Копировать» не срабатывают</b> — значит, файл открыт в окне предпросмотра (например, внутри чата), где браузер блокирует скачивание. Скачайте менеджер_постов.html на компьютер и открывайте двойным кликом — там всё работает.</div>
+      <div class="note">📱 <b>iPhone.</b> Просто тапнуть HTML-файл в «Файлах» нельзя — откроется превью без скриптов. Работающие способы: <b>открыть по ссылке</b> (например, из облака, где размещён файл) и добавить на экран «Домой» через «Поделиться» в Safari, либо бесплатное приложение <b>Documents (Readdle)</b> — скачать файл в него и открыть в его браузере. Кнопка «📤 Поделиться» отправляет коллаж с текстом прямо в Telegram через системное меню — на телефоне это самый быстрый способ публикации.</div>
+      <div class="note">🔄 <b>Синхронизация между устройствами.</b> Кнопка «Синк» в шапке: укажите токен GitHub и репозиторий — посты будут храниться в вашем GitHub и автоматически появляться на всех устройствах (проверка каждые 30 сек и при открытии страницы). Фото грузятся один раз, дальше работают офлайн.</div>
+      <div class="note">🤖 <b>Автопубликация.</b> Сейчас инструмент готовит посты, а публикуете вы вручную. Позже можно добавить отправку прямо в группы через Telegram-бота — просто скажите, когда будете готовы.</div>
+    </div>
+    <div class="sheet-foot"><button class="btn primary" id="btnCloseHelp2">Понятно</button></div>
+  </div>
+</div>
+
+<!-- ======================= СИНХРОНИЗАЦИЯ ======================= -->
+<div class="overlay" id="syncOverlay">
+  <div class="sheet">
+    <div class="sheet-head"><h2>Синхронизация · GitHub</h2><button class="x" id="btnCloseSync">✕</button></div>
+    <div class="sheet-body">
+      <div class="note" id="syncStateLine">Синхронизация не настроена</div>
+      <label class="fl" for="sToken">Токен GitHub</label>
+      <input class="inp" id="sToken" type="password" placeholder="github_pat_…" autocomplete="off">
+      <label class="fl" for="sRepo">Репозиторий (владелец/имя)</label>
+      <input class="inp" id="sRepo" placeholder="например: username/posts" autocomplete="off">
+      <label class="chk"><input type="checkbox" id="sAuto" checked> Автообновление с других устройств (проверка каждые 30 сек)</label>
+      <div class="frow" style="margin-top:18px">
+        <button class="btn primary" id="btnSyncSave">💾 Сохранить и проверить</button>
+        <button class="btn" id="btnSyncPull">⬇ Загрузить с сервера</button>
+        <button class="btn" id="btnSyncPush">⬆ Отправить на сервер</button>
+      </div>
+      <div class="note">🔐 Токен хранится <b>только на этом устройстве</b> и нужен на каждом устройстве. Создать: github.com → Settings → Developer settings → Personal access tokens → <b>Fine-grained tokens</b> → доступ только к этому репозиторию, права «Contents: Read and write».</div>
+      <div class="note">🔄 Как работает: правки сохраняются на устройстве мгновенно и через несколько секунд уходят в ваш GitHub; другие устройства подхватывают их автоматически. Фото загружаются с сервера один раз и дальше работают даже офлайн. Изменения с двух устройств одновременно решаются простым правилом «кто позже — тот прав», с предупреждением.</div>
+    </div>
+    <div class="sheet-foot"><button class="btn primary" id="btnCloseSync2">Готово</button></div>
+  </div>
+</div>
+
+<!-- ======================= ПОДТВЕРЖДЕНИЕ ======================= -->
+<div class="overlay" id="confirmOverlay">
+  <div class="sheet small">
+    <div class="sheet-body"><div id="confirmMsg" style="font-size:14.5px"></div></div>
+    <div class="sheet-foot">
+      <button class="btn" id="confirmCancel">Отмена</button>
+      <button class="btn danger" id="confirmOk">ОК</button>
+    </div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+'use strict';
+
+/* ================= утилиты ================= */
+const $ = s => document.querySelector(s);
+const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'p' + Date.now() + Math.random().toString(36).slice(2, 9));
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmtDate = ts => new Date(ts).toLocaleDateString('ru-RU', {day:'2-digit', month:'2-digit', year:'2-digit'});
+
+const CATS = {
+  realty: {label: 'Недвижимость', emoji: '🏠', cls: 'b-realty'},
+  auto:   {label: 'Машины',       emoji: '🚗', cls: 'b-auto'}
+};
+const STATUS = {draft:'Черновик', ready:'Готов', published:'Опубликован'};
+
+/* «Поделиться» (iPhone/Android): коллаж + текст уходят в Telegram через системное меню */
+const shareSupport = (() => {
+  try {
+    if (!navigator.share || !navigator.canShare) return false;
+    const f = new File([new Uint8Array([1])], 't.jpg', {type: 'image/jpeg'});
+    return navigator.canShare({files: [f]});
+  } catch (e) { return false; }
+})();
+
+/* заголовок карточки = первая непустая строка текста (для навигации) */
+function titleFromText(t) {
+  const line = String(t || '').split('\n').map(s => s.trim()).find(Boolean) || '';
+  return line.slice(0, 90);
+}
+const catOf = p => p.cat === 'auto' ? 'auto' : 'realty';
+
+const blobUrls = new WeakMap();
+const burl = b => { let u = blobUrls.get(b); if (!u) { u = URL.createObjectURL(b); blobUrls.set(b, u); } return u; };
+const blobToDataURL = b => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(b); });
+const dataURLToBlob = async u => (await fetch(u)).blob();
+
+function toast(msg, type = 'ok') {
+  const t = document.createElement('div');
+  t.className = 'toast t-' + type;
+  t.textContent = msg;
+  $('#toasts').appendChild(t);
+  setTimeout(() => { t.classList.add('out'); setTimeout(() => t.remove(), 320); }, 2600);
+}
+
+let confirmRes = null;
+function confirmDialog(msg, okLabel = 'ОК') {
+  return new Promise(res => {
+    confirmRes = res;
+    $('#confirmMsg').textContent = msg;
+    $('#confirmOk').textContent = okLabel;
+    $('#confirmOverlay').classList.add('open');
+  });
+}
+
+function showOverlay(sel) { $(sel).classList.add('open'); syncLock(); }
+function hideOverlay(sel) { $(sel).classList.remove('open'); syncLock(); }
+function syncLock() { document.body.classList.toggle('lock', document.querySelectorAll('.overlay.open').length > 0); }
+
+function embedded() { try { return window.self !== window.top; } catch (e) { return true; } }
+
+function downloadBlob(blob, name) {
+  const a = document.createElement('a');
+  a.href = burl(blob);
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  if (embedded()) toast('Если файл не скачался — окно предпросмотра блокирует скачивание. В скачанном файле менеджера всё работает.', 'warn');
+}
+function safeName(s) {
+  s = String(s || '').replace(/[\\/:*?"<>|]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 50);
+  return s || 'пост';
+}
+
+/* ================= хранилище (IndexedDB + запасной режим) ================= */
+const Store = {
+  mode: 'memory', db: null, mem: new Map(),
+  open() {
+    return new Promise((res, rej) => {
+      if (!('indexedDB' in window)) return rej(new Error('no idb'));
+      let req;
+      try { req = indexedDB.open('barakholka_posts', 1); }
+      catch (e) { return rej(e); }
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains('posts')) db.createObjectStore('posts', {keyPath: 'id'});
+      };
+      req.onsuccess = () => res(req.result);
+      req.onerror = () => rej(req.error || new Error('idb error'));
+    });
+  },
+  async init() {
+    try { this.db = await this.open(); this.mode = 'idb'; }
+    catch (e) { this.mode = 'memory'; }
+  },
+  st(mode) { return this.db.transaction('posts', mode).objectStore('posts'); },
+  async all() {
+    if (this.mode === 'idb') {
+      return new Promise((res, rej) => {
+        const r = this.st('readonly').getAll();
+        r.onsuccess = () => res(r.result || []);
+        r.onerror = () => rej(r.error);
+      });
+    }
+    return [...this.mem.values()];
+  },
+  async put(p) {
+    if (this.mode === 'idb') {
+      return new Promise((res, rej) => {
+        const r = this.st('readwrite').put(p);
+        r.onsuccess = res;
+        r.onerror = () => rej(r.error);
+      });
+    }
+    this.mem.set(p.id, p);
+  },
+  async del(id) {
+    if (this.mode === 'idb') {
+      return new Promise((res, rej) => {
+        const r = this.st('readwrite').delete(id);
+        r.onsuccess = res;
+        r.onerror = () => rej(r.error);
+      });
+    }
+    this.mem.delete(id);
+  },
+  async replaceAll(list) {
+    if (this.mode === 'idb') {
+      return new Promise((res, rej) => {
+        const tx = this.db.transaction('posts', 'readwrite');
+        const st = tx.objectStore('posts');
+        st.clear();
+        list.forEach(p => st.put(p));
+        tx.oncomplete = res;
+        tx.onerror = () => rej(tx.error);
+      });
+    }
+    this.mem.clear();
+    list.forEach(p => this.mem.set(p.id, p));
+  }
+};
+
+/* ==== LAYOUT: коллаж «главное фото + ряды» — портретный, тёмные тонкие зазоры, 1280 px (родной размер Telegram) ==== */
+const CW = 1280, GAP = 12, GAP_COLOR = '#33393F';
+const HERO_H = 866;                      // главное фото (№1) сверху, на всю ширину
+const ROW_H = {2: 432, 3: 285, 4: 212};  // высоты рядов из 2/3/4 фото (ячейки ~3:2)
+function evenRow(y, k) {                 // ряд из k равных фото
+  const w = (CW - (k - 1) * GAP) / k, h = ROW_H[k], r = [];
+  for (let i = 0; i < k; i++) r.push({x: i * (w + GAP), y, w, h});
+  return {rects: r, h};
+}
+function stagRow(y, side) {              // ряд-«мозаика»: узкая квадратная ячейка сбоку, как в примере
+  const ws = side === 'L' ? [312, 478, 466] : [466, 478, 312], h = 320, r = [];
+  let x = 0;
+  for (const w of ws) { r.push({x, y, w, h}); x += w + GAP; }
+  return {rects: r, h};
+}
+function computeLayout(n) {
+  if (n < 2) return null;
+  const plans = {                        // ряды сверху вниз: full — главное фото, r2/r3/r4 — ряды, stL/stR — мозаика
+    2:  ['full', 'full'],
+    3:  ['full', 'r2'],
+    4:  ['full', 'r3'],
+    5:  ['full', 'r2', 'r2'],
+    6:  ['full', 'r2', 'r3'],
+    7:  ['full', 'r3', 'r3'],
+    8:  ['full', 'r3', 'r4'],
+    9:  ['full', 'r4', 'r4'],
+    10: ['full', 'r3', 'stL', 'stR'],
+    11: ['full', 'r3', 'stL', 'r4'],
+    12: ['full', 'r3', 'r4', 'r4']
+  };
+  const plan = plans[n] || plans[12];
+  const rects = [];
+  let y = 0;
+  for (const row of plan) {
+    let made;
+    if (row === 'full') made = {rects: [{x: 0, y, w: CW, h: HERO_H}], h: HERO_H};
+    else if (row[0] === 'r') made = evenRow(y, +row[1]);
+    else made = stagRow(y, row === 'stL' ? 'L' : 'R');
+    rects.push(...made.rects);
+    y += made.h + GAP;
+  }
+  return {W: CW, H: y - GAP, rects};
+}
+/* ==== /LAYOUT ==== */
+
+/* ================= работа с изображениями ================= */
+async function loadBitmap(blob) {
+  if (window.createImageBitmap) {
+    try { return await createImageBitmap(blob, {imageOrientation: 'from-image'}); }
+    catch (e) { try { return await createImageBitmap(blob); } catch (e2) {} }
+  }
+  return new Promise((res, rej) => {
+    const img = new Image();
+    img.onload = () => res(img);
+    img.onerror = rej;
+    img.src = burl(blob);
+  });
+}
+function drawCover(ctx, img, r) { // вписать «обложкой»: масштаб + обрезка по центру, строго в пределах ячейки
+  const iw = img.width || img.naturalWidth, ih = img.height || img.naturalHeight;
+  if (!iw || !ih) return;
+  const s = Math.max(r.w / iw, r.h / ih), dw = iw * s, dh = ih * s;
+  ctx.save();
+  ctx.beginPath();
+  ctx.rect(r.x, r.y, r.w, r.h);
+  ctx.clip();
+  ctx.drawImage(img, r.x + (r.w - dw) / 2, r.y + (r.h - dh) / 2, dw, dh);
+  ctx.restore();
+}
+
+/* ================= состояние ================= */
+let posts = [];
+const F = {cat: 'all', status: 'all', q: '', sort: 'new'};
+let ed = null, editorOpen = false, edDirty = false, buildToken = 0, collageTimer = 0;
+let selectedCat = 'realty', lastCat = 'realty'; // запоминаем последнюю выбранную тему
+let dragIdx = -1, dragNode = null;
+
+async function loadPosts() { posts = await Store.all(); }
+
+function visible() {
+  let list = [...posts];
+  if (F.cat !== 'all') list = list.filter(p => catOf(p) === F.cat);
+  if (F.status !== 'all') list = list.filter(p => p.status === F.status);
+  const q = F.q.trim().toLowerCase();
+  if (q) list = list.filter(p => (p.text || '').toLowerCase().includes(q));
+  if (F.sort === 'new') list.sort((a, b) => b.updatedAt - a.updatedAt);
+  else if (F.sort === 'old') list.sort((a, b) => a.updatedAt - b.updatedAt);
+  else list.sort((a, b) => {
+    const da = a.plannedDate || '9999', db = b.plannedDate || '9999';
+    if (da !== db) return da < db ? -1 : 1;
+    return b.updatedAt - a.updatedAt;
+  });
+  return list;
+}
+
+/* ================= отрисовка ================= */
+function render() { renderFilters(); renderGrid(); renderFoot(); }
+
+function renderFilters() {
+  const cc = {all: posts.length, realty: 0, auto: 0};
+  posts.forEach(p => cc[catOf(p)]++);
+  $('#catChips').innerHTML = [['all','Все'],['realty','🏠 Недвижимость'],['auto','🚗 Авто']]
+    .map(([k, l]) => `<button class="chip${F.cat === k ? ' active' : ''}" data-cat="${k}">${l} · ${cc[k]}</button>`).join('');
+  const sc = {all: posts.length, draft: 0, ready: 0, published: 0};
+  posts.forEach(p => { if (sc[p.status] !== undefined) sc[p.status]++; });
+  $('#statusChips').innerHTML = [['all','Все'],['draft','Черновики'],['ready','Готовы'],['published','Опубликованы']]
+    .map(([k, l]) => `<button class="chip${F.status === k ? ' active' : ''}" data-f="${k}">${l} · ${sc[k]}</button>`).join('');
+}
+
+function cardHTML(p) {
+  const cat = CATS[catOf(p)];
+  const thumbSrc = p.collage ? burl(p.collage) : (p.photos[0] ? burl(p.photos[0].blob) : null);
+  const plan = p.plannedDate ? ` · 📅 ${new Date(p.plannedDate + 'T00:00:00').toLocaleDateString('ru-RU')}` : '';
+  const ttl = titleFromText(p.text);
+  return `<div class="card" data-id="${p.id}">
+    <div class="thumb">${thumbSrc ? `<img src="${thumbSrc}" alt="">` : '<div class="no-img">📷</div>'}${p.photos.length ? `<span class="pcount">📷 ${p.photos.length}</span>` : ''}</div>
+    <div class="cbody">
+      <div class="ctitle" title="${esc(ttl)}">${esc(ttl || '(без текста)')}</div>
+      <div class="cmeta"><span class="badge ${cat.cls}">${cat.emoji} ${cat.label}</span><span class="badge b-${p.status}">${STATUS[p.status]}</span><span>${fmtDate(p.updatedAt)}${plan}</span></div>
+      <div class="cactions">
+        <button class="mini" data-act="open" title="Открыть">✏️</button>
+        <button class="mini" data-act="copy" title="Скопировать текст (один в один, с переносами)">📋</button>
+        <button class="mini" data-act="dl" title="Скачать коллаж">⬇️</button>
+        ${shareSupport ? '<button class="mini" data-act="share" title="Поделиться — коллаж с текстом прямо в Telegram">📤</button>' : ''}
+        <button class="mini" data-act="pub" title="${p.status === 'published' ? 'Вернуть в «Готов»' : 'Отметить опубликованным'}">${p.status === 'published' ? '⟲' : '✅'}</button>
+        <button class="mini" data-act="dup" title="Дублировать">⧉</button>
+        <button class="mini danger" data-act="del" title="Удалить">🗑️</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderGrid() {
+  const list = visible(), grid = $('#grid');
+  if (!posts.length) { grid.innerHTML = ''; $('#empty').hidden = false; return; }
+  $('#empty').hidden = true;
+  grid.innerHTML = list.length ? list.map(cardHTML).join('') : '<div class="no-match">Ничего не найдено 🔍</div>';
+}
+
+async function renderFoot() {
+  const mem = Store.mode === 'memory';
+  let usage = '';
+  if (!mem && navigator.storage && navigator.storage.estimate) {
+    try { const est = await navigator.storage.estimate(); usage = ` · занято ~${(est.usage / 1048576).toFixed(1)} МБ`; } catch (e) {}
+  }
+  $('#foot').innerHTML = `Всего постов: ${posts.length}${usage} · данные хранятся локально в этом браузере${mem ? ' <b>(режим предпросмотра — не сохраняется)</b>' : ''} · регулярно делайте «⬆ Экспорт» для бэкапа`;
+}
+
+/* ================= редактор ================= */
+function renderCatSeg() {
+  document.querySelectorAll('#catSeg .seg-btn').forEach(b => b.classList.toggle('active', b.dataset.cat === selectedCat));
+}
+
+function openEditor(p) {
+  editorOpen = true;
+  ed = p
+    ? {id: p.id, cat: catOf(p), text: p.text, status: p.status, plannedDate: p.plannedDate, photos: [...p.photos], collage: p.collage, createdAt: p.createdAt, updatedAt: p.updatedAt}
+    : {id: uid(), cat: lastCat, text: '', status: 'draft', plannedDate: '', photos: [], collage: null, createdAt: Date.now()};
+  selectedCat = ed.cat;
+  $('#edHead').textContent = p ? 'Редактирование поста' : 'Новый пост';
+  $('#fText').value = ed.text;
+  $('#fStatus').value = ed.status;
+  $('#fDate').value = ed.plannedDate || '';
+  $('#btnDelEditor').style.display = p ? '' : 'none';
+  edDirty = false;
+  renderCatSeg();
+  renderPhotos();
+  renderCollageBox();
+  scheduleCollage();
+  showOverlay('#editorOverlay');
+}
+
+function closeEditor() {
+  editorOpen = false; ed = null; edDirty = false;
+  hideOverlay('#editorOverlay');
+}
+
+async function tryCloseEditor() {
+  if (ed && edDirty) {
+    const ok = await confirmDialog('Закрыть без сохранения? Несохранённые изменения пропадут.', 'Закрыть');
+    if (!ok) return;
+  }
+  closeEditor();
+}
+
+async function saveEditor() {
+  ed.cat = selectedCat;
+  ed.text = $('#fText').value; // текст сохраняется как есть, со всеми переносами
+  ed.status = $('#fStatus').value;
+  ed.plannedDate = $('#fDate').value;
+  lastCat = ed.cat;
+  ed.updatedAt = Date.now();
+  await savePost({...ed, photos: [...ed.photos]});
+  render();
+  closeEditor();
+  toast('Сохранено ✓');
+}
+
+function afterPhotosChanged() { edDirty = true; renderPhotos(); scheduleCollage(); }
+
+function renderPhotos() {
+  const box = $('#thumbs');
+  $('#photoCount').textContent = ed.photos.length ? `${ed.photos.length}/12` : '';
+  if (!ed.photos.length) { box.innerHTML = '<div class="no-photos">Фото пока нет</div>'; return; }
+  box.innerHTML = ed.photos.map((ph, i) => `
+    <div class="pthumb" draggable="true" data-i="${i}">
+      ${ph.blob ? `<img src="${burl(ph.blob)}" alt="">` : '<div class="ph-wait">⏳</div>'}
+      <span class="num">${i + 1}</span>
+      <button class="rm" data-rm="${i}" title="Убрать фото">✕</button>
+      <div class="mv"><button data-mv="-1" data-i="${i}" title="Сдвинуть влево"${i === 0 ? ' disabled' : ''}>‹</button><button data-mv="1" data-i="${i}" title="Сдвинуть вправо"${i === ed.photos.length - 1 ? ' disabled' : ''}>›</button></div>
+    </div>`).join('');
+}
+
+function syncThumbIndexes() {
+  document.querySelectorAll('#thumbs .pthumb').forEach((n, i) => {
+    n.dataset.i = i;
+    const s = n.querySelector('.num');
+    if (s) s.textContent = i + 1;
+  });
+}
+
+function movePhoto(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= ed.photos.length) return;
+  const [it] = ed.photos.splice(i, 1);
+  ed.photos.splice(j, 0, it);
+  afterPhotosChanged();
+}
+
+async function addFiles(files) {
+  const imgs = [...files].filter(f => f && f.type && f.type.startsWith('image/'));
+  if (!imgs.length) { toast('Это не изображения', 'warn'); return; }
+  let added = 0;
+  for (const f of imgs) {
+    if (ed.photos.length >= 12) { toast('Максимум 12 фото в одном посте', 'warn'); break; }
+    ed.photos.push({id: uid(), name: f.name || 'фото', blob: f});
+    added++;
+  }
+  if (added) { afterPhotosChanged(); toast(added === 1 ? 'Фото добавлено' : 'Фото добавлено: ' + added); }
+}
+
+function scheduleCollage() {
+  clearTimeout(collageTimer);
+  collageTimer = setTimeout(buildCollage, 250);
+}
+
+async function buildCollage() {
+  if (!ed || !editorOpen) return;
+  const token = ++buildToken;
+  const phs = ed.photos.filter(p => p.blob); // фото с сервера могли ещё не догрузиться
+  const n = phs.length;
+  if (n < 2) { ed.collage = null; renderCollageBox(); return; }
+  $('#collagePreview').innerHTML = '<div class="hint">Собираю коллаж…</div>';
+  $('#btnDlCollage').disabled = true;
+  const sh0 = $('#btnShareCollage'); if (sh0) sh0.disabled = true;
+  try {
+    const bmps = await Promise.all(phs.map(p => loadBitmap(p.blob)));
+    if (token !== buildToken || !editorOpen || !ed || ed.photos.filter(p => p.blob).length !== n) return;
+    const L = computeLayout(n);
+    const c = document.createElement('canvas');
+    c.width = L.W; c.height = L.H;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = GAP_COLOR;
+    ctx.fillRect(0, 0, L.W, L.H);
+    bmps.forEach((b, i) => drawCover(ctx, b, L.rects[i]));
+    bmps.forEach(b => b.close && b.close());
+    const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.9));
+    if (token !== buildToken || !editorOpen || !ed) return;
+    ed.collage = blob;
+    renderCollageBox();
+  } catch (e) {
+    if (token === buildToken) { renderCollageBox(); toast('Не удалось собрать коллаж: ' + (e && e.message || e), 'err'); }
+  }
+}
+
+function renderCollageBox() {
+  const box = $('#collagePreview'), info = $('#collageInfo'), dl = $('#btnDlCollage'), rb = $('#btnRebuild'), sh = $('#btnShareCollage');
+  const n = ed.photos.length;
+  const syncShare = () => { if (sh) sh.disabled = dl.disabled; };
+  if (n === 0) { box.innerHTML = '<div class="hint">Добавьте фото — коллаж для Telegram соберётся автоматически</div>'; info.textContent = ''; dl.disabled = true; rb.disabled = true; syncShare(); return; }
+  if (n === 1) {
+    box.innerHTML = `<img src="${burl(ed.photos[0].blob)}" alt="">`;
+    info.textContent = 'одно фото — коллаж не нужен';
+    dl.disabled = false; rb.disabled = true; syncShare(); return;
+  }
+  rb.disabled = false;
+  if (!ed.collage) {
+    const loading = ed.photos.some(p => !p.blob && p.path);
+    box.innerHTML = loading ? '<div class="hint">Загружаю фото с сервера…</div>' : '<div class="hint">Собираю коллаж…</div>';
+    info.textContent = ''; dl.disabled = true; syncShare(); return;
+  }
+  box.innerHTML = `<img src="${burl(ed.collage)}" alt="коллаж">`;
+  info.textContent = `${n} фото · ${Math.max(1, Math.round(ed.collage.size / 1024))} КБ · 1280 px`;
+  dl.disabled = false; syncShare();
+}
+
+function downloadCollageFromEditor() {
+  if (!ed) return;
+  const base = safeName(titleFromText(ed.text));
+  if (ed.collage) downloadBlob(ed.collage, base + ' — коллаж.jpg');
+  else if (ed.photos[0]) downloadBlob(ed.photos[0].blob, base + '.jpg');
+  else toast('В посте нет фото', 'warn');
+}
+
+/* ================= просмотр изображения ================= */
+function openImgViewer(blob, title) {
+  $('#imgTitle').textContent = title || 'Просмотр';
+  $('#imgBig').src = burl(blob);
+  showOverlay('#imgOverlay');
+}
+function closeImgViewer() {
+  hideOverlay('#imgOverlay');
+  $('#imgBig').src = '';
+}
+
+/* ================= «Поделиться» (мобильные: Telegram и др.) ================= */
+async function sharePost(p) {
+  const blob = p.collage || (p.photos[0] && p.photos[0].blob);
+  if (!blob) { toast('В посте нет фото', 'warn'); return; }
+  const name = safeName(titleFromText(p.text)) + (p.collage ? ' — коллаж.jpg' : '.jpg');
+  const file = new File([blob], name, {type: 'image/jpeg'});
+  if (!navigator.canShare || !navigator.canShare({files: [file]})) {
+    toast('Здесь «Поделиться» недоступно — используйте «⬇️» и «📋»', 'warn');
+    return;
+  }
+  try {
+    await navigator.share(Object.assign({files: [file]}, p.text ? {text: p.text} : {}));
+  } catch (e) {
+    if (e && e.name === 'AbortError') return; // пользователь закрыл меню
+    toast('Не удалось поделиться — используйте «⬇️» и «📋»', 'warn');
+  }
+}
+
+/* ================= действия с карточками ================= */
+async function copyText(p) {
+  const t = p.text || '';
+  if (!t) { toast('В посте нет текста', 'warn'); return; }
+  try {
+    await navigator.clipboard.writeText(t);
+    toast('Текст скопирован ✓ — один в один, с переносами строк');
+  } catch (e) {
+    const ta = document.createElement('textarea');
+    ta.value = t;
+    ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    let ok = false;
+    try { ok = document.execCommand('copy'); } catch (e2) {}
+    ta.remove();
+    if (ok) toast('Текст скопирован ✓ — один в один, с переносами строк');
+    else toast('Не удалось скопировать — откройте пост и скопируйте текст вручную', 'err');
+  }
+}
+
+async function cardAction(act, p) {
+  if (act === 'open') { openEditor(p); return; }
+  if (act === 'copy') { copyText(p); return; }
+  if (act === 'share') { sharePost(p); return; }
+  if (act === 'dl') {
+    if (!p.photos.length) { toast('В посте нет фото', 'warn'); return; }
+    const base = safeName(titleFromText(p.text));
+    if (p.collage) downloadBlob(p.collage, base + ' — коллаж.jpg');
+    else downloadBlob(p.photos[0].blob, base + '.jpg');
+    return;
+  }
+  if (act === 'pub') {
+    p.status = p.status === 'published' ? 'ready' : 'published';
+    p.updatedAt = Date.now();
+    await savePost(p);
+    render();
+    toast(p.status === 'published' ? 'Отмечен как опубликованный ✅' : 'Вернул в «Готов»');
+    return;
+  }
+  if (act === 'dup') {
+    await savePost({...p, id: uid(), cat: catOf(p), status: 'draft', createdAt: Date.now(), updatedAt: Date.now(), photos: [...p.photos]});
+    render();
+    toast('Пост продублирован ⧉');
+    return;
+  }
+  if (act === 'del') {
+    if (await confirmDialog('Удалить пост «' + (titleFromText(p.text) || 'без названия') + '»? Это действие нельзя отменить.', 'Удалить')) {
+      await deletePostSync(p.id);
+      render();
+      toast('Пост удалён');
+    }
+  }
+}
+
+/* ================= экспорт / импорт ================= */
+async function exportBackup() {
+  if (!posts.length) { toast('Нет постов для экспорта', 'warn'); return; }
+  const out = {app: 'barakholka-post-manager', version: 2, exportedAt: new Date().toISOString(), posts: []};
+  for (const p of posts) {
+    out.posts.push({
+      id: p.id,
+      cat: catOf(p),
+      text: p.text || '',
+      status: p.status,
+      plannedDate: p.plannedDate || '',
+      createdAt: p.createdAt,
+      updatedAt: p.updatedAt,
+      photos: await Promise.all(p.photos.map(async ph => ({id: ph.id, name: ph.name, blob: await blobToDataURL(ph.blob)}))),
+      collage: p.collage ? await blobToDataURL(p.collage) : null
+    });
+  }
+  const d = new Date();
+  const name = `бэкап_постов_${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}.json`;
+  downloadBlob(new Blob([JSON.stringify(out)], {type: 'application/json'}), name);
+  toast(`Экспортировано постов: ${posts.length} ✓`);
+}
+
+async function importBackup(file) {
+  try {
+    const data = JSON.parse(await file.text());
+    if (!data || !Array.isArray(data.posts)) throw new Error('bad format');
+    let n = 0;
+    for (const p of data.posts) {
+      if (!p || typeof p !== 'object' || !Array.isArray(p.photos)) continue;
+      const post = {
+        id: p.id || uid(),
+        cat: p.cat === 'auto' ? 'auto' : 'realty',
+        text: p.text || p.title || '', // старый формат: был отдельный заголовок
+        status: ['draft', 'ready', 'published'].includes(p.status) ? p.status : 'draft',
+        plannedDate: p.plannedDate || '',
+        createdAt: p.createdAt || Date.now(),
+        updatedAt: p.updatedAt || Date.now(),
+        photos: [],
+        collage: null
+      };
+      for (const ph of p.photos) {
+        if (!ph || !ph.blob) continue;
+        post.photos.push({id: ph.id || uid(), name: ph.name || 'фото', blob: await dataURLToBlob(ph.blob)});
+      }
+      if (p.collage) { try { post.collage = await dataURLToBlob(p.collage); } catch (e) {} }
+      await Store.put(post);
+      n++;
+    }
+    await loadPosts();
+    pendingPush = true; S.pending = true; saveSettings();
+    updateSyncBadge(); scheduleAutopush();
+    render();
+    toast(`Импортировано постов: ${n} ✓`);
+  } catch (e) {
+    toast('Не удалось прочитать файл бэкапа', 'err');
+  }
+}
+
+/* ================= события ================= */
+function bindEvents() {
+  $('#btnNew').onclick = () => openEditor(null);
+  $('#btnExport').onclick = exportBackup;
+  $('#btnImport').onclick = () => $('#importInput').click();
+  $('#importInput').onchange = e => { const f = e.target.files[0]; if (f) importBackup(f); e.target.value = ''; };
+  $('#btnHelp').onclick = () => showOverlay('#helpOverlay');
+  $('#btnCloseHelp').onclick = () => hideOverlay('#helpOverlay');
+  $('#btnCloseHelp2').onclick = () => hideOverlay('#helpOverlay');
+
+  /* --- синхронизация --- */
+  $('#btnSync').onclick = openSyncModal;
+  $('#btnEmptySync').onclick = openSyncModal;
+  $('#btnCloseSync').onclick = () => hideOverlay('#syncOverlay');
+  $('#btnCloseSync2').onclick = () => hideOverlay('#syncOverlay');
+  $('#syncOverlay').addEventListener('mousedown', e => { if (e.target.id === 'syncOverlay') hideOverlay('#syncOverlay'); });
+  $('#btnSyncSave').onclick = saveSyncSettings;
+  $('#btnSyncPull').onclick = () => syncNow(false);
+  $('#btnSyncPush').onclick = () => { pendingPush = true; S.pending = true; saveSettings(); updateSyncBadge(); autoPush(); };
+  $('#sAuto').addEventListener('change', e => { S.auto = e.target.checked; saveSettings(); });
+
+  let qT = 0;
+  $('#q').addEventListener('input', e => {
+    clearTimeout(qT);
+    qT = setTimeout(() => { F.q = e.target.value; renderGrid(); }, 150);
+  });
+  $('#catChips').addEventListener('click', e => {
+    const b = e.target.closest('[data-cat]');
+    if (b) { F.cat = b.dataset.cat; render(); }
+  });
+  $('#statusChips').addEventListener('click', e => {
+    const b = e.target.closest('[data-f]');
+    if (b) { F.status = b.dataset.f; render(); }
+  });
+  $('#sSort').addEventListener('change', e => { F.sort = e.target.value; renderGrid(); });
+
+  $('#grid').addEventListener('click', e => {
+    const b = e.target.closest('[data-act]');
+    if (!b) return;
+    const card = e.target.closest('.card');
+    if (!card) return;
+    const p = posts.find(x => x.id === card.dataset.id);
+    if (p) cardAction(b.dataset.act, p);
+  });
+
+  /* --- редактор --- */
+  ['#fText', '#fStatus', '#fDate'].forEach(sel =>
+    $(sel).addEventListener('input', () => { edDirty = true; }));
+  $('#catSeg').addEventListener('click', e => {
+    const b = e.target.closest('.seg-btn');
+    if (b) { selectedCat = b.dataset.cat; renderCatSeg(); edDirty = true; }
+  });
+  $('#btnPasteText').onclick = async () => {
+    try {
+      const t = await navigator.clipboard.readText();
+      if (t) { $('#fText').value = ($('#fText').value ? $('#fText').value + '\n' : '') + t; edDirty = true; }
+      else toast('Буфер обмена пуст', 'warn');
+    } catch (e) {
+      toast('Браузер не дал доступ к буферу — вставьте через Ctrl+V', 'warn');
+    }
+  };
+  $('#btnAddPhotos').onclick = () => $('#photosInput').click();
+  $('#photosInput').onchange = e => { addFiles(e.target.files); e.target.value = ''; };
+  if (shareSupport) $('#btnShareCollage').style.display = '';
+
+  /* вставка фото из буфера обмена (на iPhone — через системную кнопку «Вставить») */
+  $('#btnClipPhotos').onclick = async () => {
+    try {
+      if (!navigator.clipboard || !navigator.clipboard.read) throw new Error('нет доступа');
+      const items = await navigator.clipboard.read();
+      const blobs = [];
+      for (const it of items) {
+        const t = (it.types || []).find(x => x.startsWith('image/'));
+        if (t) blobs.push(await it.getType(t));
+      }
+      if (blobs.length) addFiles(blobs);
+      else toast('В буфере нет изображения', 'warn');
+    } catch (e) {
+      toast('Не удалось прочитать буфер — добавьте фото кнопкой «＋» или Ctrl+V', 'warn');
+    }
+  };
+
+  const dz = $('#dropzone');
+  dz.onclick = () => $('#photosInput').click();
+  ['dragover', 'dragenter'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.add('over'); }));
+  ['dragleave', 'drop'].forEach(ev => dz.addEventListener(ev, e => { e.preventDefault(); dz.classList.remove('over'); }));
+  dz.addEventListener('drop', e => {
+    const fs = [...((e.dataTransfer && e.dataTransfer.files) || [])];
+    if (fs.length) addFiles(fs);
+  });
+
+  const thumbs = $('#thumbs');
+  thumbs.addEventListener('click', e => {
+    const rm = e.target.closest('[data-rm]');
+    if (rm) { ed.photos.splice(+rm.dataset.rm, 1); afterPhotosChanged(); return; }
+    const mv = e.target.closest('[data-mv]');
+    if (mv) movePhoto(+mv.dataset.i, +mv.dataset.mv);
+  });
+  thumbs.addEventListener('dragstart', e => {
+    const t = e.target.closest('.pthumb');
+    if (!t) return;
+    dragIdx = +t.dataset.i; dragNode = t;
+    t.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+    try { e.dataTransfer.setData('text/plain', ''); } catch (err) {}
+  });
+  thumbs.addEventListener('dragover', e => {
+    e.preventDefault();
+    if (!dragNode || dragIdx < 0) return;
+    const t = e.target.closest('.pthumb');
+    if (!t || t === dragNode) return;
+    const over = +t.dataset.i;
+    const goingDown = over > dragIdx;
+    const [it] = ed.photos.splice(dragIdx, 1);
+    ed.photos.splice(over, 0, it);
+    thumbs.insertBefore(dragNode, goingDown ? t.nextSibling : t); // перемещаем сам узел — drag не прервётся
+    dragIdx = over;
+    syncThumbIndexes();
+  });
+  thumbs.addEventListener('drop', e => e.preventDefault());
+  thumbs.addEventListener('dragend', () => {
+    if (dragNode) dragNode.classList.remove('dragging');
+    dragNode = null;
+    if (dragIdx >= 0) { dragIdx = -1; edDirty = true; scheduleCollage(); renderPhotos(); }
+  });
+
+  $('#btnRebuild').onclick = () => buildCollage();
+  $('#btnDlCollage').onclick = downloadCollageFromEditor;
+  $('#btnShareCollage').onclick = async () => {
+    if (!ed) return;
+    await sharePost({collage: ed.collage || (ed.photos[0] && ed.photos[0].blob), photos: [], text: $('#fText').value});
+  };
+  $('#collagePreview').addEventListener('click', () => {
+    if (!ed) return;
+    const b = ed.collage || (ed.photos[0] && ed.photos[0].blob);
+    if (b) openImgViewer(b, titleFromText(ed.text) || 'Коллаж');
+  });
+  $('#btnSaveEd').onclick = saveEditor;
+  $('#btnCancelEd').onclick = tryCloseEditor;
+  $('#btnCloseEd').onclick = tryCloseEditor;
+  $('#btnDelEditor').onclick = async () => {
+    const exists = posts.find(x => x.id === ed.id);
+    if (exists && await confirmDialog('Удалить этот пост? Это действие нельзя отменить.', 'Удалить')) {
+      await deletePostSync(ed.id);
+      closeEditor();
+      render();
+      toast('Пост удалён');
+    } else if (!exists) closeEditor();
+  };
+  $('#editorOverlay').addEventListener('mousedown', e => {
+    if (e.target.id === 'editorOverlay') tryCloseEditor();
+  });
+
+  $('#btnCloseImg').onclick = closeImgViewer;
+  $('#btnCloseImg2').onclick = closeImgViewer;
+  $('#imgOverlay').addEventListener('mousedown', e => {
+    if (e.target.id === 'imgOverlay') closeImgViewer();
+  });
+  $('#helpOverlay').addEventListener('mousedown', e => {
+    if (e.target.id === 'helpOverlay') hideOverlay('#helpOverlay');
+  });
+
+  $('#confirmOk').onclick = () => { hideOverlay('#confirmOverlay'); if (confirmRes) confirmRes(true); confirmRes = null; };
+  $('#confirmCancel').onclick = () => { hideOverlay('#confirmOverlay'); if (confirmRes) confirmRes(false); confirmRes = null; };
+
+  /* вставка фото из буфера обмена, пока открыт редактор */
+  document.addEventListener('paste', e => {
+    if (!editorOpen) return;
+    const items = [...((e.clipboardData && e.clipboardData.items) || [])].filter(i => i.type && i.type.startsWith('image/'));
+    if (items.length) {
+      e.preventDefault();
+      addFiles(items.map(i => i.getAsFile()).filter(Boolean));
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      if ($('#confirmOverlay').classList.contains('open')) $('#confirmCancel').click();
+      else if ($('#imgOverlay').classList.contains('open')) closeImgViewer();
+      else if ($('#helpOverlay').classList.contains('open')) hideOverlay('#helpOverlay');
+      else if ($('#syncOverlay').classList.contains('open')) hideOverlay('#syncOverlay');
+      else if ($('#editorOverlay').classList.contains('open')) tryCloseEditor();
+    }
+  });
+}
+
+/* ================= синхронизация через GitHub ================= */
+const S = {token: '', repo: '', branch: 'main', auto: true, lastSha: '', lastSyncAtRemote: 0, lastSyncAt: 0, pending: false};
+let pendingPush = false, pushing = false, pushTimer = 0, pollTimer = 0;
+
+function saveSettings() { try { localStorage.setItem('posts_sync_v1', JSON.stringify(S)); } catch (e) {} }
+function loadSettings() {
+  try {
+    const t = localStorage.getItem('posts_sync_v1');
+    if (t) { const o = JSON.parse(t); Object.keys(S).forEach(k => { if (o[k] !== undefined) S[k] = o[k]; }); }
+  } catch (e) {}
+  pendingPush = !!S.pending;
+}
+
+function utf8B64encode(str) { return btoa(unescape(encodeURIComponent(str))); }
+function utf8B64decode(b64) { return decodeURIComponent(escape(atob(b64))); }
+
+async function gh(path, opts = {}) {
+  const r = await fetch('https://api.github.com' + path, Object.assign({}, opts, {
+    headers: Object.assign({
+      'Accept': 'application/vnd.github+json',
+      'Authorization': 'Bearer ' + S.token,
+      'X-GitHub-Api-Version': '2022-11-28'
+    }, opts.headers || {})
+  }));
+  if (!r.ok) {
+    let m = '';
+    try { const j = await r.json(); m = (j && j.message) || ''; } catch (e) {}
+    const err = new Error('GitHub ' + r.status + (m ? ' — ' + m : ''));
+    err.status = r.status;
+    throw err;
+  }
+  return r;
+}
+
+async function ghGetData() { // data.json из репозитория
+  const r = await gh('/repos/' + S.repo + '/contents/data.json?ref=' + encodeURIComponent(S.branch), {cache: 'no-store'});
+  const j = await r.json();
+  return {sha: j.sha, data: JSON.parse(utf8B64decode(String(j.content).replace(/\s/g, '')))};
+}
+
+function rawPhotoUrl(path) {
+  return 'https://raw.githubusercontent.com/' + S.repo + '/' + encodeURIComponent(S.branch) + '/' +
+    path.split('/').map(encodeURIComponent).join('/');
+}
+
+async function ghPutFile(path, contentB64, message) {
+  const r = await gh('/repos/' + S.repo + '/contents/' + path.split('/').map(encodeURIComponent).join('/'), {
+    method: 'PUT',
+    body: JSON.stringify({message, content: contentB64, branch: S.branch})
+  });
+  await r.json();
+}
+
+async function blobToB64(blob) {
+  const d = await blobToDataURL(blob);
+  return d.slice(d.indexOf(',') + 1);
+}
+
+function serializePosts() {
+  return posts.map(p => ({
+    id: p.id, cat: catOf(p), text: p.text || '', status: p.status, plannedDate: p.plannedDate || '',
+    createdAt: p.createdAt, updatedAt: p.updatedAt,
+    photos: p.photos.map(ph => ({id: ph.id, name: ph.name || 'фото', path: ph.path || ''}))
+  }));
+}
+
+async function uploadPendingPhotos() {
+  const jobs = [];
+  posts.forEach(p => p.photos.forEach(ph => { if (!ph.path && ph.blob) jobs.push([p, ph]); }));
+  if (!jobs.length) return;
+  if (jobs.length > 15) {
+    const ok = await confirmDialog('Загрузить ' + jobs.length + ' фото в GitHub? Это займёт пару минут.', 'Загрузить');
+    if (!ok) throw new Error('загрузка фото отменена');
+  }
+  for (const [p, ph] of jobs) {
+    ph.path = 'photos/' + p.id + '/' + ph.id + '.jpg';
+    await ghPutFile(ph.path, await blobToB64(ph.blob), 'Фото: ' + (titleFromText(p.text) || 'пост').slice(0, 40));
+    await Store.put(p);
+  }
+}
+
+async function autoPush() {
+  if (!S.token || !S.repo || !pendingPush || pushing) return;
+  pushing = true; updateSyncBadge('sync');
+  try {
+    let remote = null;
+    try { remote = (await ghGetData()).data; } catch (e) { if (e.status !== 404) throw e; }
+    if (remote && S.lastSyncAtRemote && remote.updatedAt > S.lastSyncAtRemote) {
+      const overwrite = await confirmDialog('На сервере есть более свежие изменения (с другого устройства).\n«ОК» — перезаписать сервер этой версией.\n«Отмена» — загрузить серверную версию (текущие правки пропадут).', 'Перезаписать сервер');
+      if (!overwrite) {
+        pendingPush = false; S.pending = false; saveSettings();
+        await applyRemote(remote);
+        S.lastSyncAtRemote = remote.updatedAt; S.lastSyncAt = Date.now(); saveSettings();
+        updateSyncBadge();
+        return;
+      }
+    }
+    await uploadPendingPhotos();
+    const data = {app: 'barakholka-post-manager', version: 3, updatedAt: Date.now(), posts: serializePosts()};
+    let sha = null;
+    try { sha = (await ghGetData()).sha; } catch (e) { /* файла ещё нет — создадим */ }
+    await gh('/repos/' + S.repo + '/contents/data.json', {
+      method: 'PUT',
+      body: JSON.stringify({
+        message: 'Посты: ' + new Date().toLocaleString('ru-RU'),
+        content: utf8B64encode(JSON.stringify(data)), sha, branch: S.branch
+      })
+    });
+    pendingPush = false; S.pending = false;
+    S.lastSyncAtRemote = data.updatedAt; S.lastSyncAt = Date.now();
+    saveSettings(); updateSyncBadge();
+    toast('Отправлено в GitHub ✓');
+  } catch (e) {
+    updateSyncBadge();
+    if (String(e.message || e).indexOf('GitHub') === 0) toast('Не удалось отправить: ' + e.message, 'err');
+  } finally { pushing = false; }
+}
+
+function scheduleAutopush() {
+  if (!S.token || !S.repo) return;
+  clearTimeout(pushTimer);
+  pushTimer = setTimeout(autoPush, 4000);
+}
+
+async function applyRemote(data) {
+  if (!data || !Array.isArray(data.posts)) throw new Error('неверный формат data.json');
+  const oldById = new Map(posts.map(p => [p.id, p]));
+  const list = data.posts.map(rp => {
+    const prev = oldById.get(rp.id);
+    const photos = (rp.photos || []).map(ph => {
+      const pp = prev && prev.photos.find(x => x.id === ph.id);
+      return {id: ph.id || uid(), name: ph.name || 'фото', path: ph.path || '', blob: pp ? pp.blob : null};
+    });
+    let collage = null;
+    if (prev && prev.collage && prev.photos.length === photos.length &&
+        prev.photos.every((x, i) => x.id === photos[i].id)) collage = prev.collage; // состав фото не менялся — коллаж актуален
+    return {
+      id: rp.id || uid(), cat: rp.cat === 'auto' ? 'auto' : 'realty', text: rp.text || '',
+      status: ['draft', 'ready', 'published'].includes(rp.status) ? rp.status : 'draft',
+      plannedDate: rp.plannedDate || '', createdAt: rp.createdAt || Date.now(), updatedAt: rp.updatedAt || Date.now(),
+      photos, collage
+    };
+  });
+  await ensurePhotoBlobs(list);
+  posts = list;
+  await Store.replaceAll(posts);
+  render();
+  rebuildCollagesInBackground();
+}
+
+async function ensurePhotoBlobs(list) {
+  const missing = [];
+  list.forEach(p => p.photos.forEach(ph => { if (!ph.blob && ph.path) missing.push(ph); }));
+  if (!missing.length) return;
+  toast('Загружаю фото с сервера: ' + missing.length + '…');
+  let fails = 0;
+  for (const ph of missing) {
+    try {
+      const r = await fetch(rawPhotoUrl(ph.path), {cache: 'force-cache'});
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      ph.blob = await r.blob();
+    } catch (e) { fails++; }
+  }
+  if (fails) toast('Не удалось загрузить фото: ' + fails + ' (проверьте интернет)', 'warn');
+}
+
+/* фоновая пересборка коллажей после синхронизации */
+let rebuildQueue = [], rebuilding = false;
+function rebuildCollagesInBackground() {
+  posts.filter(p => p.photos.length >= 2 && !p.collage).forEach(p => rebuildQueue.push(p.id));
+  processRebuildQueue();
+}
+async function processRebuildQueue() {
+  if (rebuilding) return;
+  rebuilding = true;
+  while (rebuildQueue.length) {
+    const id = rebuildQueue.shift();
+    const p = posts.find(x => x.id === id);
+    if (!p || p.collage) continue;
+    const phs = p.photos.filter(x => x.blob);
+    if (phs.length < 2) continue;
+    try {
+      const bmps = await Promise.all(phs.map(x => loadBitmap(x.blob)));
+      const L = computeLayout(phs.length);
+      const c = document.createElement('canvas');
+      c.width = L.W; c.height = L.H;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = GAP_COLOR;
+      ctx.fillRect(0, 0, L.W, L.H);
+      bmps.forEach((b, i) => drawCover(ctx, b, L.rects[i]));
+      bmps.forEach(b => b.close && b.close());
+      p.collage = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.9));
+      await Store.put(p); // коллаж — локальный кэш, синхронизацию не дёргаем
+      renderGrid();
+    } catch (e) {}
+  }
+  rebuilding = false;
+}
+
+async function pollRemote() {
+  if (!S.token || !S.repo || !S.auto || pushing || editorOpen || document.hidden) return;
+  try {
+    const r = await gh('/repos/' + S.repo + '/contents/data.json?ref=' + encodeURIComponent(S.branch), {cache: 'no-store'});
+    const j = await r.json();
+    if (j.sha !== S.lastSha) {
+      const data = JSON.parse(utf8B64decode(String(j.content).replace(/\s/g, '')));
+      S.lastSha = j.sha; saveSettings();
+      if (!pendingPush && data.updatedAt > (S.lastSyncAtRemote || 0)) {
+        await applyRemote(data);
+        S.lastSyncAtRemote = data.updatedAt; S.lastSyncAt = Date.now(); saveSettings();
+        updateSyncBadge();
+        toast('Обновлено с другого устройства ✓');
+      }
+    }
+  } catch (e) {}
+}
+
+async function syncNow(silent) {
+  if (!S.token || !S.repo) return;
+  updateSyncBadge('sync');
+  try {
+    const g = await ghGetData();
+    S.lastSha = g.sha; saveSettings();
+    if (g.data && g.data.updatedAt > (S.lastSyncAtRemote || 0)) {
+      await applyRemote(g.data);
+      S.lastSyncAtRemote = g.data.updatedAt;
+    }
+    S.lastSyncAt = Date.now(); saveSettings(); updateSyncBadge();
+    if (!silent) toast('Загружено с сервера ✓');
+  } catch (e) {
+    updateSyncBadge();
+    if (!silent) toast('Не удалось загрузить: ' + e.message, 'err');
+  }
+}
+
+function updateSyncBadge(state) {
+  const dot = $('#syncDot');
+  if (!dot) return;
+  let cls = 'dot';
+  if (state === 'sync') cls += ' sync';
+  else if (!S.token || !S.repo) cls += '';
+  else if (pendingPush) cls += ' warn';
+  else if (S.lastSyncAt) cls += ' ok';
+  dot.className = cls;
+  const btn = $('#btnSync');
+  if (btn) btn.title = !S.token || !S.repo ? 'Синхронизация не настроена'
+    : (pendingPush ? 'Есть изменения — отправлю на сервер через пару секунд'
+    : (S.lastSyncAt ? 'Синхронизировано: ' + new Date(S.lastSyncAt).toLocaleTimeString('ru-RU') : 'Подключено'));
+  const line = $('#syncStateLine');
+  if (line) line.textContent = !S.token || !S.repo ? 'Синхронизация не настроена — введите токен и репозиторий'
+    : (pendingPush ? '🟡 Есть изменения, ожидающие отправки на сервер'
+    : (S.lastSyncAt ? '🟢 Синхронизировано: ' + new Date(S.lastSyncAt).toLocaleTimeString('ru-RU') : 'Подключено к репозиторию'));
+}
+
+function openSyncModal() {
+  $('#sToken').value = S.token;
+  $('#sRepo').value = S.repo;
+  $('#sAuto').checked = S.auto;
+  updateSyncBadge();
+  showOverlay('#syncOverlay');
+}
+
+async function saveSyncSettings() {
+  const token = $('#sToken').value.trim();
+  let repo = $('#sRepo').value.trim()
+    .replace(/^https?:\/\/github\.com\//i, '').replace(/\/+$/, '').replace(/\/tree\/.*$/, '');
+  if (!token || !repo || repo.indexOf('/') < 0) { toast('Заполните токен и репозиторий в виде владелец/имя', 'warn'); return; }
+  S.token = token; S.repo = repo;
+  updateSyncBadge('sync');
+  try {
+    const u = await gh('/user');
+    const uj = await u.json();
+    const r = await gh('/repos/' + S.repo);
+    const rj = await r.json();
+    S.branch = rj.default_branch || 'main';
+    S.lastSha = ''; S.lastSyncAtRemote = 0;
+    saveSettings();
+    updateSyncBadge();
+    toast('Подключено: ' + S.repo + ' ✓ (ветка ' + S.branch + ', пользователь ' + uj.login + ')');
+    syncNow(true);
+  } catch (e) {
+    updateSyncBadge();
+    toast('Проверка не прошла: ' + e.message, 'err');
+  }
+}
+
+/* сохранение с пометкой «нужно отправить на сервер» */
+async function savePost(post) {
+  await Store.put(post);
+  const i = posts.findIndex(p => p.id === post.id);
+  if (i >= 0) posts[i] = post; else posts.push(post);
+  pendingPush = true; S.pending = true; saveSettings();
+  updateSyncBadge(); scheduleAutopush();
+}
+async function deletePostSync(id) {
+  await Store.del(id);
+  posts = posts.filter(p => p.id !== id);
+  pendingPush = true; S.pending = true; saveSettings();
+  updateSyncBadge(); scheduleAutopush();
+}
+
+/* ================= запуск ================= */
+(async function init() {
+  loadSettings();
+  await Store.init();
+  if (Store.mode !== 'idb') $('#memBanner').hidden = false;
+  bindEvents();
+  await loadPosts();
+  render();
+  updateSyncBadge();
+  if (S.token && S.repo) syncNow(true);          // подтянуть изменения при открытии
+  if (S.pending) scheduleAutopush();             // доделать несостоявшуюся отправку
+  setInterval(pollRemote, 30000);                // автообновление с других устройств
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) pollRemote(); });
+})();
+</script>
+</body>
+</html>
